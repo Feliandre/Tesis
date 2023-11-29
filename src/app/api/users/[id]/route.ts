@@ -6,12 +6,12 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     const id = params.id
-    const getMember = await prisma.member.findUnique({
+    const getUsuario = await prisma.usuario.findUnique({
     where: {
         id: parseInt(id, 10)
     }
     })
-    return NextResponse.json(getMember)
+    return NextResponse.json(getUsuario)
 }
 
 export async function PUT(
@@ -21,25 +21,20 @@ export async function PUT(
     const id = params.id
     const json = await request.json()
 
-    const updateMember = await prisma.member.update({
+    const updateUsuario = await prisma.usuario.update({
     where: {
         id: parseInt(id, 10)
     },
     data: {
-        cedula: json.cedula || null,
         nombre: json.nombre || null,
         apellido: json.apellido || null,
         email: json.email || null,
-        telefono: json.telefono || null,
-        telefonoEmergencia: json.telefonoEmergencia || null,
-        fechaNacimiento: json.fechaNacimiento || null,
-        sexo: json.sexo || null,
-        direccion: json.direccion || null,
-        nacionalidad: json.nacionalidad || null
+        password: json.password || null,
+        confirm_password: json.confirm_password || null
     }
     })
 
-    return NextResponse.json(updateMember)
+    return NextResponse.json(updateUsuario)
 }
 
 export async function PATCH(
@@ -49,14 +44,14 @@ export async function PATCH(
     const id = params.id
     const json = await request.json()
 
-    const updateMember = await prisma.member.update({
+    const updateUsuario = await prisma.usuario.update({
     where: {
         id: parseInt(id, 10)
     },
     data: json
     })
 
-    return NextResponse.json(updateMember)
+    return NextResponse.json(updateUsuario)
 }
 
 export async function DELETE(
@@ -65,11 +60,11 @@ export async function DELETE(
 ) {
     const id = params.id
 
-    const deleteMember = await prisma.member.delete({
+    const deleteUsuario = await prisma.usuario.delete({
     where: {
         id: parseInt(id, 10)
     }
     })
 
-    return NextResponse.json(deleteMember)
+    return NextResponse.json(deleteUsuario)
 }

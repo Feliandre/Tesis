@@ -35,7 +35,6 @@ model Plan {
   duracion    Int      @db.Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Member      Member?
   Pago        Pago?
 }
 
@@ -52,9 +51,7 @@ model Member {
   direccion          String      @db.VarChar(255)
   nacionalidad       String      @db.VarChar(50)
   fechaInscripcion   DateTime    @default(now())
-  estado             Int         @db.Int()@default(1)
-  plan               Plan?       @relation(fields: [planId], references: [id])
-  planId             Int?        @unique
+  estado             Int?        @db.Int()@default(1)
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
   Asistencia         Asistencia?
@@ -88,8 +85,8 @@ model Usuario {
   email            String   @db.VarChar(255)
   password         String   @db.VarChar(255)
   confirm_password String   @db.VarChar(255)
-  estado           Int      @db.Int()@default(1)
-  rolId            Int      @db.Int()@default(2)
+  estado           Int?     @db.Int()@default(1)
+  rolId            Int?     @db.Int()@default(2)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
