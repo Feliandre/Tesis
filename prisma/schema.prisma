@@ -16,6 +16,7 @@ model Role {
   descripcion String   @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  Usuario     Usuario?
 }
 
 model Gym {
@@ -35,7 +36,7 @@ model Plan {
   duracion    Int      @db.Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Pago        Pago?
+  Member      Member?
 }
 
 model Member {
@@ -43,7 +44,7 @@ model Member {
   cedula             String      @db.VarChar(13)
   nombre             String      @db.VarChar(50)
   apellido           String      @db.VarChar(50)
-  email              String      @db.VarChar(255)
+  email              String      @db.VarChar(100) @unique
   telefono           String      @db.VarChar(20)
   telefonoEmergencia String      @db.VarChar(20)
   fechaNacimiento    DateTime    @db.Date
@@ -52,6 +53,8 @@ model Member {
   nacionalidad       String      @db.VarChar(50)
   fechaInscripcion   DateTime    @default(now())
   estado             Int?        @db.Int()@default(1)
+  plan               Plan?       @relation(fields: [planId], references: [id])
+  planId             Int?        @unique @default(1)
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
   Asistencia         Asistencia?
@@ -72,8 +75,6 @@ model Pago {
   fecha     DateTime @db.Date
   miembro   Member   @relation(fields: [miembroId], references: [id])
   miembroId Int      @unique
-  plan      Plan     @relation(fields: [planId], references: [id])
-  planId    Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -82,11 +83,12 @@ model Usuario {
   id               Int      @id @default(autoincrement())
   nombre           String   @db.VarChar(50)
   apellido         String   @db.VarChar(50)
-  email            String   @db.VarChar(255)
+  email            String   @db.VarChar(100) @unique
   password         String   @db.VarChar(255)
   confirm_password String   @db.VarChar(255)
   estado           Int?     @db.Int()@default(1)
-  rolId            Int?     @db.Int()@default(2)
+  rol              Role?    @relation(fields: [rolId], references: [id])
+  rolId            Int?     @unique @default(2)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

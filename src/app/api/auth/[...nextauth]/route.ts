@@ -3,7 +3,6 @@ import { compare } from "bcrypt";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-/*
 export const authOptions: NextAuthOptions = {
     session: {
     strategy: "jwt",
@@ -20,23 +19,24 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         },
         async authorize(credentials) {
-            if (!credentials?.email || !credentials.password) {
-                return null;
-            }
+        if (!credentials?.email || !credentials.password) {
+            return null;
+        }
 
-        const getUsuario = await prisma.usuario.findUnique({
+        // Debe ser un usuario con un campo unico no el primero
+        const user = await prisma.usuario.findFirst({
             where: {
-                id: getUsuario.id,
+            email: credentials.email,
             },
         });
 
-        if (!getUsuario) {
+        if (!user) {
             return null;
         }
 
         const isPasswordValid = await compare(
             credentials.password,
-            getUsuario.password
+            user.password
         );
 
         if (!isPasswordValid) {
@@ -44,24 +44,22 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-            id: getUsuario.id + "",
-            email: getUsuario.email,
-            nombre: getUsuario.nombre,
-            randomKey: "tesis",
+            id: user.id + "",
+            email: user.email,
+            nombre: user.nombre,
         };
-    },
+        },
     }),
-],
+    ],
     callbacks: {
     session: ({ session, token }) => {
         console.log("Session Callback", { session, token });
         return {
-            ...session,
-            getUsuario: {
+        ...session,
+        user: {
             ...session.user,
             id: token.id,
-            randomKey: token.randomKey,
-            },
+        },
         };
     },
     jwt: ({ token, user }) => {
@@ -71,15 +69,12 @@ export const authOptions: NextAuthOptions = {
         return {
             ...token,
             id: u.id,
-            randomKey: u.randomKey,
         };
-    }
-    return token;
+        }
+        return token;
     },
-},
+    },
 };
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-
-*/
