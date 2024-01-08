@@ -30,8 +30,7 @@ export async function PUT(
         nombre: json.nombre, //|| null,
         apellido: json.apellido, //|| null,
         email: json.email, //|| null,
-        password: json.password, //|| null,
-        confirm_password: json.confirm_password //|| null
+        password: json.password//|| null,
     }
     })
 
@@ -59,6 +58,7 @@ export async function DELETE(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    try {
     const id = params.id
 
     const deleteUsuario = await prisma.usuario.delete({
@@ -67,7 +67,22 @@ export async function DELETE(
     }
     })
 
-    return NextResponse.json(deleteUsuario)
+    if (deleteUsuario) {
+        return new NextResponse(
+            JSON.stringify({
+                success: "El usuario se eliminó correctamente",
+                data: deleteUsuario,
+            }),
+            { status: 200 }
+        );
+    }
+
+    } catch(error) {
+        return new NextResponse(
+            JSON.stringify({ error: "El usuario o ID no existe" }),
+            { status: 404 }
+        )
+    }
 }
 
 export async function POST(request: Request) {

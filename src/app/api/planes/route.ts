@@ -13,11 +13,24 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+    try {
     const json = await request.json();
 
     const newPlan = await prisma.plan.create({
     data: json,
     });
 
-    return new NextResponse(JSON.stringify(newPlan), { status: 201 });
+    if (newPlan) {
+        return new NextResponse(JSON.stringify({
+            success: "El plan se ha creado con éxito.",
+            data: newPlan,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }

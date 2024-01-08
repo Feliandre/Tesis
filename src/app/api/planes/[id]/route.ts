@@ -5,19 +5,33 @@ export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    try {
     const id = params.id
     const getPlan = await prisma.plan.findUnique({
     where: {
         id: parseInt(id, 10)
     }
     })
-    return NextResponse.json(getPlan)
+    if (getPlan) {
+        return new NextResponse(JSON.stringify({
+            success: "El plan se ha encontrado con éxito.",
+            data: getPlan,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "El plan o ID no se encuentran. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
 
 export async function PUT(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    try {
     const id = params.id
     const json = await request.json()
 
@@ -33,13 +47,26 @@ export async function PUT(
     }
     })
 
-    return NextResponse.json(updatePlan)
+    if (updatePlan) {
+        return new NextResponse(JSON.stringify({
+            success: "El plan se ha actualizado con éxito.",
+            data: updatePlan,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
 
 export async function PATCH(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    try {
     const id = params.id
     const json = await request.json()
 
@@ -50,13 +77,26 @@ export async function PATCH(
     data: json
     })
 
-    return NextResponse.json(updatePlan)
+    if (updatePlan) {
+        return new NextResponse(JSON.stringify({
+            success: "El plan se ha actualizado con éxito.",
+            data: updatePlan,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
 
 export async function DELETE(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    try {
     const id = params.id
 
     const deletePlan = await prisma.plan.delete({
@@ -65,5 +105,17 @@ export async function DELETE(
     }
     })
 
-    return NextResponse.json(deletePlan)
+    if (deletePlan) {
+        return new NextResponse(JSON.stringify({
+            success: "El plan se ha eliminado con éxito.",
+            data: deletePlan,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "El plan o ID no existen. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
