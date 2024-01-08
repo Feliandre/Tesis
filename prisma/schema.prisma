@@ -57,8 +57,8 @@ model Member {
   planId             Int         @default(1)
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
-  Asistencia         Asistencia?
-  Pago               Pago?
+  Asistencia         Asistencia []
+  Pago               Pago []
 
 }
 
@@ -66,7 +66,7 @@ model Asistencia {
   id        Int      @id @default(autoincrement())
   fecha     DateTime @db.DateTime()
   miembro   Member   @relation(fields: [miembroId], references: [id])
-  miembroId Int      @unique
+  miembroId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -75,7 +75,7 @@ model Pago {
   id        Int      @id @default(autoincrement())
   fecha     DateTime @db.Date
   miembro   Member   @relation(fields: [miembroId], references: [id])
-  miembroId Int      @unique
+  miembroId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
