@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import bcrypt from "bcrypt";
+// funciones de validación
+import {validarContraseña,validarEmail} from "@/utils/functions";
 
 export async function GET(request: NextRequest) {
     // Paginacion
@@ -14,23 +16,30 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+    try {
     const json = await request.json();
 
-    // Hashear la contraseña despues de crear el usuario
-    const hashedPassword = await bcrypt.hashSync(json.password, 10);
-    const hashedConfirmPassword = await bcrypt.hashSync(json.confirm_password, 10);
+    // Validar contraseña
+    const errores_password = await validarContraseña(json.password);
+    const errores_email = await validarEmail(json.email);
 
-
-    // Verifica que password y confirm_password no sean diferentes
-    if (json.password !== json.confirm_password) {
-        return new NextResponse(JSON.stringify(
-            { error: "Las contraseñas no coinciden" }),
-            { status: 400 });
+    const errores = [];
+    if (errores_password.length > 0) {
+        errores.push(...errores_password); // Agrega los errores de contraseña
     }
+    if (errores_email) {
+        errores.push(...errores_email); // Agrega los errores de email
+    }
+
+    if (errores.length > 0) {
+        return new NextResponse(JSON.stringify({ error: errores }), { status: 400 });
+    }
+
+    // Hashear la contraseña antes de crear el usuario
+    const hashedPassword = await bcrypt.hashSync(json.password, 10);
 
     // Antes de enviar la contraseña a la base ponerla hasheada dentro del json
     json.password = hashedPassword;
-    json.confirm_password = hashedConfirmPassword;
 
     const newUsuario = await prisma.usuario.create({
         data: {
@@ -43,5 +52,18 @@ export async function POST(request: Request) {
         },
     });
 
-    return new NextResponse(JSON.stringify(newUsuario), { status: 201 });
+    if (newUsuario) {
+        return new NextResponse(JSON.stringify({
+            success: "El usuario se ha creado con éxito.",
+            data: newUsuario,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
+
 }

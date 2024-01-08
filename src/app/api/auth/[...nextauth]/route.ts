@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Debe ser un usuario con un campo unico no el primero
-        const user = await prisma.usuario.findFirst({
+        const user = await prisma.usuario.findUnique({
             where: {
             email: credentials.email,
             },

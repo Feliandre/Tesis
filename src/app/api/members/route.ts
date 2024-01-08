@@ -15,9 +15,32 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
     const json = await request.json();
 
+    try {
     const newMember = await prisma.member.create({
-    data: json,
+        data: {
+            ...json,
+            plan: {
+                connect: {
+                    id: json.plan || 1, // Tambien se debe poner por default el plan y si no se especifica va el que es por defecto
+                },
+            },
+        },
     });
 
-    return new NextResponse(JSON.stringify(newMember), { status: 201 });
+    if (newMember) {
+        return new NextResponse(JSON.stringify({
+            success: "El miembro se ha creado con éxito.",
+            data: newMember,
+        }), { status: 201 });
+    }
+
+
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
+
 }

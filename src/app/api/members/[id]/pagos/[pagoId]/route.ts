@@ -5,19 +5,33 @@ export async function GET(
     request: Request,
     { params: { id, pagoId } }: { params: { id: string; pagoId: string } }
     ) {
+    try {
     const getPago = await prisma.pago.findFirst({
         where: {
         id: Number(pagoId),
         miembroId: Number(id)
         }
     })
-    return NextResponse.json(getPago)
+    if (getPago) {
+        return new NextResponse(JSON.stringify({
+            success: "El pago se ha encontrado con éxito.",
+            data: getPago,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "El pago o ID no se encuentran. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
 
 export async function PUT(
     request: Request,
     { params: { pagoId } }: { params: { id: string; pagoId: string } }
     ) {
+    try {
     const json = await request.json()
     const updatePago = await prisma.pago.update({
         where: {
@@ -27,13 +41,26 @@ export async function PUT(
         fecha: json.fecha //|| null,
         }
         })
-    return NextResponse.json(updatePago)
+        if (updatePago) {
+            return new NextResponse(JSON.stringify({
+                success: "El pago se ha actualizado con éxito.",
+                data: updatePago,
+            }), { status: 201 });
+        }
+
+        }catch (error) {
+            return new NextResponse(
+                JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+                { status: 400 }
+            );
+        }
 }
 
 export async function PATCH(
     request: Request,
     { params: { pagoId } }: { params: { id: string; pagoId: string } }
     ) {
+    try {
     const json = await request.json()
     const updatePago = await prisma.pago.update({
         where: {
@@ -41,17 +68,42 @@ export async function PATCH(
         },
         data: json
     })
-    return NextResponse.json(updatePago)
+    if (updatePago) {
+        return new NextResponse(JSON.stringify({
+            success: "El pago se ha actualizado con éxito.",
+            data: updatePago,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "Verifique todos los campos. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
 
 export async function DELETE(
     request: Request,
     { params: { pagoId } }: { params: { id: string; pagoId: string } }
     ) {
+    try {
     const deletePago = await prisma.pago.delete({
         where: {
         id: Number(pagoId)
         }
     })
-    return NextResponse.json(deletePago)
+    if (deletePago) {
+        return new NextResponse(JSON.stringify({
+            success: "El pago se ha eliminado con éxito.",
+            data: deletePago,
+        }), { status: 201 });
+    }
+
+    }catch (error) {
+        return new NextResponse(
+            JSON.stringify({ error: "El pago o ID no existen. Por favor, inténtelo de nuevo.", }),
+            { status: 400 }
+        );
+    }
 }
