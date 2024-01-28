@@ -50,7 +50,7 @@ export default function LoginPage () {
           <Form.Input
             placeholder='Repite tu contraseña...'
             label='Confirmar Contraseña'
-            name='confirmPassword'
+            name='confirm_password'
             type='password'
           />
         </div>

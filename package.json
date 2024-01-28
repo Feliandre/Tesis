@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -20,7 +20,7 @@
     "dotenv": "^16.3.1",
     "encoding": "^0.1.13",
     "jsonwebtoken": "^9.0.2",
-    "next": "14.0.3",
+    "next": "^14.1.0",
     "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
