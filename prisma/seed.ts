@@ -73,6 +73,7 @@ async function main() {
     update: {
       nombre: "Test",
       apellido: "Usuario",
+      rolId: 2
     },
   });
 
