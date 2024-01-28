@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @db.VarChar(50)@unique
+  descripcion String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Usuario     Usuario?
+}
+
+model Gym {
+  id        Int    @id @default(autoincrement())
+  ruc       String @db.VarChar(13)
+  nombre    String @db.VarChar(50)
+  direccion String @db.VarChar(150)
+  telefono  String @db.VarChar(20)
+  email     String @db.VarChar(255)
+}
+
+model Plan {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @db.VarChar(50)@unique
+  descripcion String   @db.VarChar(255)
+  valor       Decimal  @db.Decimal(5, 2)
+  duracion    Int      @db.Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Member      Member []
+}
+
+model Member {
+  id                 Int         @id @default(autoincrement())
+  cedula             String      @db.VarChar(13)
+  nombre             String      @db.VarChar(50)
+  apellido           String      @db.VarChar(50)
+  email              String      @db.VarChar(100) @unique
+  telefono           String      @db.VarChar(20)
+  telefonoEmergencia String      @db.VarChar(20)
+  fechaNacimiento    DateTime    @db.Date
+  sexo               String      @db.Char(2)
+  direccion          String      @db.VarChar(255)
+  nacionalidad       String      @db.VarChar(50)
+  fechaInscripcion   DateTime    @default(now())
+  estado             Int?        @db.Int()@default(1)
+  plan               Plan?        @relation(fields: [planId], references: [id] )
+  planId             Int         @default(1)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  Asistencia         Asistencia []
+  Pago               Pago []
+
+}
+
+model Asistencia {
+  id        Int      @id @default(autoincrement())
+  fecha     DateTime @db.DateTime()
+  miembro   Member   @relation(fields: [miembroId], references: [id])
+  miembroId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Pago {
+  id        Int      @id @default(autoincrement())
+  fecha     DateTime @db.Date
+  miembro   Member   @relation(fields: [miembroId], references: [id])
+  miembroId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Usuario {
+  id               Int      @id @default(autoincrement())
+  nombre           String   @db.VarChar(50)
+  apellido         String   @db.VarChar(50)
+  email            String   @db.VarChar(100) @unique
+  password         String   @db.VarChar(255)
+  estado           Int?     @db.Int()@default(1)
+  rol              Role?    @relation(fields: [rolId], references: [id])
+  rolId            Int?     @unique @default(2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
