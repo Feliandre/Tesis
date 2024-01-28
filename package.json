@@ -26,7 +26,8 @@
     "react-dom": "^18",
     "resend": "^2.1.0",
     "saas": "^1.0.0",
-    "sass": "^1.69.7"
+    "sass": "^1.69.7",
+    "vercel": "^33.3.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

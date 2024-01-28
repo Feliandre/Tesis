@@ -1,0 +1,15 @@
+{
+    "database": {
+      "url": "mysql://ut20lp2mzvkphncv:JsrOIvzBnYndbTi2hdTu@bbifodesm6ae6hu9t9ea-mysql.services.clever-cloud.com:3306/bbifodesm6ae6hu9t9ea"
+    },
+
+    "cdn": {
+      "enabled": true,
+      "provider": "vercel"
+    },
+
+    "prisma": {
+        "path": "/src/libs/prisma.ts"
+    }
+    
+  }
